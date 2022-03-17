@@ -37,7 +37,7 @@ pub fn build(b: *std.build.Builder) void
     const lib = b.addSharedLibrary(PROJECT_NAME, "src/wasm_main.zig", .unversioned);
     lib.setBuildMode(mode);
     lib.setTarget(wasmTarget);
-    lib.override_dest_dir = installDirStatic;
+    lib.override_dest_dir = installDirRoot;
     lib.install();
 
     // const installDirData = std.build.InstallDir {

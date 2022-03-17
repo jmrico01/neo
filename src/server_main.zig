@@ -6,6 +6,9 @@ const server = @import("http-server");
 
 const SERVER_IP = "0.0.0.0";
 
+const WASM_FILE = "neo.wasm";
+const WASM_DIR = "zig-out"; // TODO eh
+
 pub const log_level: std.log.Level = switch (builtin.mode) {
     .Debug => .debug,
     .ReleaseSafe => .info,
@@ -27,7 +30,13 @@ fn serverCallback(state: *ServerState, request: server.Request, writer: server.W
 
     switch (request.method) {
         .Get => {
-            try server.serveStatic(writer, request.uri, "static", allocator);
+            const wasmUri = "/" ++ WASM_FILE;
+            if (std.mem.eql(u8, request.uri, wasmUri)) {
+                // TODO eh
+                try server.serveStatic(writer, wasmUri, WASM_DIR, allocator);
+            } else {
+                try server.serveStatic(writer, request.uri, "static", allocator);
+            }
         },
         .Post => {
             try server.writeCode(writer, ._404);
